@@ -53,12 +53,8 @@ public class SimulationTable {
 	/**
 	 * This method will run a simulation using the FIFO algorithm to schedule processes.
 	 * @param args Unused.
-   	 * @return Nothing.
+   	 * @return int averageTurnaroundTime - the average time it takes for a process to be completed from its arrival time
 	 */
-	//TODO
-	// finish method: push processes to queue at arrival times; 
-	// correct variable names Ri, pi, etc.;
-	//finish general integration with simulationTable constructor
 	public int runSimulationFIFO(){
 		int time=0; //time counter
 		int indexInProcesses=0;
@@ -66,63 +62,35 @@ public class SimulationTable {
 		Comparator<Process> byArrival = (p1, p2) -> p1.getArrivalTime()-p2.getArrivalTime();
 		PriorityQueue<Process> queue = new PriorityQueue<Process>(processes.length, byArrival); // for whatever reason, my compiler does not like 'N'
 		
-		//TODO
-		//remove once finished testing
-		queue.addAll(Arrays.asList(processes));
-		System.out.println("PriorityQueue");
-		System.out.println(queue.isEmpty());
-		while(!queue.isEmpty()){
-			System.out.print(queue.poll().toString());
-		}
-		System.out.println("Split");
-
 		Process pi=null;
-		while(indexInProcesses<processes.length||!queue.isEmpty()||pi!=null){ //
-			System.out.printf("Time: %d ",time);
-			System.out.print(queue+"\n");
+		while(indexInProcesses<processes.length||!queue.isEmpty()||pi!=null){ 
 			while(indexInProcesses<processes.length && processes[indexInProcesses].getArrivalTime()==time){//should exit loop if no processes with arrival time of t 
 				queue.offer(processes[indexInProcesses]);
 				indexInProcesses++;
-				System.out.println("Index test");
 			}
 			
-			if(pi==null&&queue.isEmpty()){//choosing active process pi
-				System.out.println("null test");
+			if(pi==null&&queue.isEmpty()){//nothing to do in this case, just increment time
 				time++;
 				continue;
-				//pi=queue.poll();
-				//check the processes to see if they have arrived; if yes, add to readyqueue
 			}
 			else if(!queue.isEmpty()&&pi==null){
 				pi=queue.poll();
-				//TODO takeout after testing
-				//if(pi!=null)
-					System.out.print("Current active process: " + pi.toString());
 			}
-			time++;
-			//execute pi 
+			time++;//increment time after process has been chosen but BEFORE pi execution and calculations
+			
 			if(pi!=null){
 				pi.setActive(true);
-				//TODO testing
-				System.out.print("\tnot null process: " + pi.toString());
 				pi.setRemainingCPUTime(pi.getRemainingCPUTime()-1);//decrement Ri
 				if(pi.getRemainingCPUTime()<=0){
 					pi.setActive(false);
 					pi.setTurnaroundTime(time-pi.getArrivalTime());
 					averageTurnaroundTime+=pi.getTurnaroundTime();
-					System.out.print("finishing active process: " + pi.toString());
 					pi=null;//end the execution of pi and choose new process
 				}
-				
 			}
 		}
-			
-		//compute average turnaround time
 		
-		// foreach(Process p: this.processArray){
-		// 	averageTurnaroundTime+=p.getTurnaroundTime();
-		// }
-		 return averageTurnaroundTime/=this.processes.length;
+		return averageTurnaroundTime/=this.processes.length;
 		
 	}
 
