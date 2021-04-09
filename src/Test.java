@@ -2,8 +2,9 @@
 public class Test {
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
+		SimulationTable table = new SimulationTable(5, 10, 10, 5);
 	
+		table.printProcesses();
 
 	}
 

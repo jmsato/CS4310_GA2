@@ -2,9 +2,9 @@ import java.util.*;
 
 public class SimulationTable {
 
-	private int k;
-	private int d;
-	private int v;
+	private int k; //upper bound for arrival times
+	private int d; //average total CPU time
+	private int v; //standard deviation (should be a percentage of d) 
 	private Process[] processes;
 	private int N; // Number of processes
 	private Random random;
@@ -21,8 +21,6 @@ public class SimulationTable {
 //	between 0 and some value k, where k is a simulation parameter
 	public int getArrivalTime(){
 		Random randomArrival = new Random();
-		//TODO fix this
-		//Not scaling standard deviation for now, only adding to the new mean
 		int arrivalTime = randomArrival.nextInt(k+1);
 		return arrivalTime;
 	}
@@ -38,12 +36,21 @@ public class SimulationTable {
 
 	public void createProcesses(int N){
 		boolean active = true;
+		Comparator<Process> byArrivalTime = (p1, p2) -> ((Integer)p1.getArrivalTime()).compareTo(((Integer)p2.getArrivalTime()));
 		processes = new Process[N];
 		for(int i=0;i<N;i++){
-			processes[i] = new Process(!active,  getArrivalTime(), getTotalCPUTime());
+			int cpuTime = (int) getTotalCPUTime();
+			Process p = new Process(!active, (int) getArrivalTime(), cpuTime);
+			processes[i] = p;
 		}
-		Comparator<Process> byArrivalTime = (p1, p2) -> p1.getArrivalTime()-p2.getArrivalTime();
 		Arrays.sort(processes, byArrivalTime);
+	}
+	
+	public void printProcesses() {
+		System.out.println("Testing order of arrival times: ");
+		for(Process process: processes) {
+			System.out.println(process.getArrivalTime());
+		}
 	}
 	
 	/**
@@ -52,7 +59,7 @@ public class SimulationTable {
    	 * @return int averageTurnaroundTime - the average time it takes for a process to be completed from its arrival time
 	 */
 	public int runSimulationFIFO(){
-		int time=0; //time counter
+		int time=0;
 		int indexInProcesses=0;
 		int averageTurnaroundTime=0; 
 		Comparator<Process> byArrival = (p1, p2) -> p1.getArrivalTime()-p2.getArrivalTime();
@@ -84,34 +91,17 @@ public class SimulationTable {
 					pi=null;//end the execution of pi and choose new process
 				}
 			}
-		}
-		
+		}	
 		return averageTurnaroundTime/=this.processes.length;
-		
 	}
-
-	public void runSimulationSJF(){
-		int t=0; //time counter
-		PriorityQueue<Process> queue = new PriorityQueue<Process>(processes.length, 
-			Comparator.comparing(Process::getRemainingCPUTime)
-					.thenComparing(Process::getArrivalTime)); //using :: to do method reference and creating chain comparators
-		
-		//TODO
-		//remove once finish testing
-		queue.addAll(Arrays.asList(processes));
-		System.out.println(queue.isEmpty());
-		while(!queue.isEmpty()){
-			System.out.print(queue.poll().toString());
-		}
-	}
-
+	
 	/**
-	 * This method will run a simulation using the SRT algorithm to schedule processes.
+	 * This method will run a simulation using the SJF algorithm to schedule processes.
 	 * @param args Unused.
    	 * @return int averageTurnaroundTime - the average time it takes for a process to be completed from its arrival time
 	 */
-	public int runSimulationSRT(){
-		int time=0; //time counter
+	public double runSimulationSJF(){
+		int time=0; 
 		int indexInProcesses=0;
 		int averageTurnaroundTime=0; 
 		PriorityQueue<Process> queue = new PriorityQueue<Process>(processes.length, 
@@ -119,13 +109,53 @@ public class SimulationTable {
 					.thenComparing(Process::getArrivalTime)); //using :: to do method reference and creating chain comparators
 
 		Process pi=null;
-		while(indexInProcesses<processes.length||!queue.isEmpty()||pi!=null){ //
+		while(indexInProcesses<processes.length||!queue.isEmpty()||pi!=null){ 
+			while(indexInProcesses<processes.length && processes[indexInProcesses].getArrivalTime()==time){//should exit loop if no processes with arrival time of t 
+				queue.offer(processes[indexInProcesses]);
+				indexInProcesses++;
+			}
+			if(pi==null&&queue.isEmpty()){
+				time++;
+				continue;
+			}
+			else if(!queue.isEmpty()&&pi==null){
+				pi=queue.poll();
+			}
+			time++;
+			if(pi!=null){
+				pi.setActive(true);
+				pi.setRemainingCPUTime(pi.getRemainingCPUTime()-1);
+				if(pi.getRemainingCPUTime()<=0){
+					pi.setActive(false);
+					pi.setTurnaroundTime(time-pi.getArrivalTime());
+					averageTurnaroundTime+=pi.getTurnaroundTime();
+					pi=null;//end the execution of pi and choose new process, can't just break
+				}
+			}
+		}
+		return averageTurnaroundTime/=this.processes.length;
+	}
+	
+	/**
+	 * This method will run a simulation using the SRT algorithm to schedule processes.
+	 * @param args Unused.
+   	 * @return int averageTurnaroundTime - the average time it takes for a process to be completed from its arrival time
+	 */
+	public int runSimulationSRT(){
+		int time=0;
+		int indexInProcesses=0;
+		int averageTurnaroundTime=0; 
+		PriorityQueue<Process> queue = new PriorityQueue<Process>(processes.length, 
+			Comparator.comparing(Process::getRemainingCPUTime)
+					.thenComparing(Process::getArrivalTime)); //using :: to do method reference and creating chain comparators
+
+		Process pi=null;
+		while(indexInProcesses<processes.length||!queue.isEmpty()||pi!=null){
 			
 			while(indexInProcesses<processes.length && processes[indexInProcesses].getArrivalTime()==time){//should exit loop if no processes with arrival time of t 
 				queue.offer(processes[indexInProcesses]);
 				indexInProcesses++;
 			}
-			
 			if(pi==null&&queue.isEmpty()){
 				time++;
 				continue;
@@ -140,23 +170,18 @@ public class SimulationTable {
 			}
 			time++;
 
-			System.out.printf("Time: %d ",time);
-			System.out.print(queue+"\n");
-			//execute pi 
 			if(pi!=null){
 				pi.setActive(true);
-				pi.setRemainingCPUTime(pi.getRemainingCPUTime()-1);//decrement Ri
+				pi.setRemainingCPUTime(pi.getRemainingCPUTime()-1);
 				if(pi.getRemainingCPUTime()<=0){
 					pi.setActive(false);
 					pi.setTurnaroundTime(time-pi.getArrivalTime());
 					averageTurnaroundTime+=pi.getTurnaroundTime();
 					pi=null;//end the execution of pi and choose new process
 				}
-				
 			}
 		}
 		return averageTurnaroundTime/=this.processes.length;
-		
 	}
 
 }
