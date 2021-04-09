@@ -36,13 +36,11 @@ public class SimulationTable {
 
 	public void createProcesses(int N){
 		boolean active = true;
-		Comparator<Process> byArrivalTime = (p1, p2) -> ((Integer)p1.getArrivalTime()).compareTo(((Integer)p2.getArrivalTime()));
 		processes = new Process[N];
 		for(int i=0;i<N;i++){
-			int cpuTime = (int) getTotalCPUTime();
-			Process p = new Process(!active, (int) getArrivalTime(), cpuTime);
-			processes[i] = p;
+			processes[i] = new Process(!active,  getArrivalTime(), getTotalCPUTime());
 		}
+		Comparator<Process> byArrivalTime = (p1, p2) -> p1.getArrivalTime()-p2.getArrivalTime();
 		Arrays.sort(processes, byArrivalTime);
 	}
 	
@@ -100,7 +98,7 @@ public class SimulationTable {
 	 * @param args Unused.
    	 * @return int averageTurnaroundTime - the average time it takes for a process to be completed from its arrival time
 	 */
-	public double runSimulationSJF(){
+	public int runSimulationSJF(){
 		int time=0; 
 		int indexInProcesses=0;
 		int averageTurnaroundTime=0; 
