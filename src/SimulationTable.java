@@ -108,12 +108,81 @@ public class SimulationTable {
 			System.out.print(queue.poll().toString());
 		}
 	}
-	public void runSimulationSRT(){
-		int t=0; //time counter
+
+	/**
+	 * This method will run a simulation using the SRT algorithm to schedule processes.
+	 * @param args Unused.
+   	 * @return int averageTurnaroundTime - the average time it takes for a process to be completed from its arrival time
+	 */
+	//TODO  double check timing. ATT seems correct, but time print is off in testing?
+	public int runSimulationSRT(){
+		int time=0; //time counter
+		int indexInProcesses=0;
+		int averageTurnaroundTime=0; 
 		PriorityQueue<Process> queue = new PriorityQueue<Process>(processes.length, 
 			Comparator.comparing(Process::getRemainingCPUTime)
 					.thenComparing(Process::getArrivalTime)); //using :: to do method reference and creating chain comparators
 		//TODO must add the processes into queue
+		
+		//TODO
+		//remove once finished testing
+		queue.addAll(Arrays.asList(processes));
+		System.out.println("PriorityQueue");
+		System.out.println(queue.isEmpty());
+		while(!queue.isEmpty()){
+			System.out.print(queue.poll().toString());
+		}
+		System.out.println("Split");
+
+		Process pi=null;
+		while(indexInProcesses<processes.length||!queue.isEmpty()||pi!=null){ //
+			
+			while(indexInProcesses<processes.length && processes[indexInProcesses].getArrivalTime()==time){//should exit loop if no processes with arrival time of t 
+				queue.offer(processes[indexInProcesses]);
+				indexInProcesses++;
+				//
+				//System.out.println("Index test");
+			}
+			
+			if(pi==null&&queue.isEmpty()){//choosing active process pi
+				//TODO remove once finished testing
+				//System.out.println("null test");
+				time++;
+				continue;
+			}
+			else if(!queue.isEmpty()&&pi==null){
+				pi=queue.poll();
+				//TODO takeout after testing
+				//	System.out.print("Current active process: " + pi.toString());
+			}
+			else if(!queue.isEmpty()&&pi!=null&&pi.getRemainingCPUTime()>queue.peek().getRemainingCPUTime()){//adding third case, to interrupt if next process has shorter remaining time
+				pi.setActive(false);
+				queue.offer(pi);//add pi back onto the queue
+				pi=queue.poll();
+			}
+			time++;
+
+			System.out.printf("Time: %d ",time);
+			System.out.print(queue+"\n");
+			//execute pi 
+			if(pi!=null){
+				pi.setActive(true);
+				pi.setRemainingCPUTime(pi.getRemainingCPUTime()-1);//decrement Ri
+				//TODO testing
+				System.out.print("\tcurrent process: " + pi.toString());
+				if(pi.getRemainingCPUTime()<=0){
+					pi.setActive(false);
+					pi.setTurnaroundTime(time-pi.getArrivalTime());
+					averageTurnaroundTime+=pi.getTurnaroundTime();
+					//TODO testing
+					System.out.print("\tfinishing active process: " + pi.toString());
+					pi=null;//end the execution of pi and choose new process
+				}
+				
+			}
+		}
+		return averageTurnaroundTime/=this.processes.length;
+		
 	}
 
 }
