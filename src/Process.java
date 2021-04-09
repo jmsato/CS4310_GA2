@@ -1,4 +1,4 @@
-public class Process {
+public class Process{
 
 	private boolean active;
 	private int arrivalTime;
@@ -53,4 +53,13 @@ public class Process {
 	public void setTurnaroundTime(int turnaroundTime) {
 		this.turnaroundTime = turnaroundTime;
 	}
+
+	public String toString(){
+		return "Process [ Active: " + this.active +
+		", Arrival Time: " + this.arrivalTime +
+		", Total CPU Time: " + this.totalCPUTime+
+		", Remaining CPU Time: " +this.remainingCPUTime+
+		", Turnaround Time: " + turnaroundTime + " ]\n";
+	}
+
 }
