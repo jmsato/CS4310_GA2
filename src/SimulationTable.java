@@ -22,21 +22,20 @@ public class SimulationTable {
 
 //	Each Ai is an integer chosen randomly from a uniform distribution
 //	between 0 and some value k, where k is a simulation parameter
-	public double getArrivalTime(){
+	public int getArrivalTime(){
 		Random randomArrival = new Random();
 		//TODO fix this
 		//Not scaling standard deviation for now, only adding to the new mean
-		double arrivalTime = randomArrival.nextDouble(k+1.0);
+		int arrivalTime = randomArrival.nextInt(k+1);
 		return arrivalTime;
-
 	}
 
 //	Each Ti is an integer chosen randomly from a normal (Gaussian)
 //	distribution with an average d and a standard deviation v, where d and v
 //	are simulation parameters.
-	public double getTotalCPUTime(){
+	public int getTotalCPUTime(){
 		Random randomCPU=new Random();
-		double totalCPUTime = randomCPU.nextGaussian()*v+d;
+		int totalCPUTime = (int)randomCPU.nextGaussian()*v+d;
 		return totalCPUTime;
 	}
 
@@ -44,7 +43,7 @@ public class SimulationTable {
 		boolean active = true;
 		processes = new Process[N];
 		for(int i=0;i<N;i++){
-			processes[i] = new Process(!active,  (int) getArrivalTime(), (int) getTotalCPUTime());
+			processes[i] = new Process(!active,  getArrivalTime(), getTotalCPUTime());
 		}
 		Comparator<Process> byArrivalTime = (p1, p2) -> p1.getArrivalTime()-p2.getArrivalTime();
 		Arrays.sort(processes, byArrivalTime);
@@ -114,7 +113,6 @@ public class SimulationTable {
 	 * @param args Unused.
    	 * @return int averageTurnaroundTime - the average time it takes for a process to be completed from its arrival time
 	 */
-	//TODO  double check timing. ATT seems correct, but time print is off in testing?
 	public int runSimulationSRT(){
 		int time=0; //time counter
 		int indexInProcesses=0;
@@ -122,17 +120,6 @@ public class SimulationTable {
 		PriorityQueue<Process> queue = new PriorityQueue<Process>(processes.length, 
 			Comparator.comparing(Process::getRemainingCPUTime)
 					.thenComparing(Process::getArrivalTime)); //using :: to do method reference and creating chain comparators
-		//TODO must add the processes into queue
-		
-		//TODO
-		//remove once finished testing
-		queue.addAll(Arrays.asList(processes));
-		System.out.println("PriorityQueue");
-		System.out.println(queue.isEmpty());
-		while(!queue.isEmpty()){
-			System.out.print(queue.poll().toString());
-		}
-		System.out.println("Split");
 
 		Process pi=null;
 		while(indexInProcesses<processes.length||!queue.isEmpty()||pi!=null){ //
@@ -140,20 +127,14 @@ public class SimulationTable {
 			while(indexInProcesses<processes.length && processes[indexInProcesses].getArrivalTime()==time){//should exit loop if no processes with arrival time of t 
 				queue.offer(processes[indexInProcesses]);
 				indexInProcesses++;
-				//
-				//System.out.println("Index test");
 			}
 			
-			if(pi==null&&queue.isEmpty()){//choosing active process pi
-				//TODO remove once finished testing
-				//System.out.println("null test");
+			if(pi==null&&queue.isEmpty()){
 				time++;
 				continue;
 			}
 			else if(!queue.isEmpty()&&pi==null){
 				pi=queue.poll();
-				//TODO takeout after testing
-				//	System.out.print("Current active process: " + pi.toString());
 			}
 			else if(!queue.isEmpty()&&pi!=null&&pi.getRemainingCPUTime()>queue.peek().getRemainingCPUTime()){//adding third case, to interrupt if next process has shorter remaining time
 				pi.setActive(false);
@@ -168,14 +149,10 @@ public class SimulationTable {
 			if(pi!=null){
 				pi.setActive(true);
 				pi.setRemainingCPUTime(pi.getRemainingCPUTime()-1);//decrement Ri
-				//TODO testing
-				System.out.print("\tcurrent process: " + pi.toString());
 				if(pi.getRemainingCPUTime()<=0){
 					pi.setActive(false);
 					pi.setTurnaroundTime(time-pi.getArrivalTime());
 					averageTurnaroundTime+=pi.getTurnaroundTime();
-					//TODO testing
-					System.out.print("\tfinishing active process: " + pi.toString());
 					pi=null;//end the execution of pi and choose new process
 				}
 				
