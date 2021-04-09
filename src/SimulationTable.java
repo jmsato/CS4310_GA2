@@ -26,7 +26,7 @@ public class SimulationTable {
 		Random randomArrival = new Random();
 		//TODO fix this
 		//Not scaling standard deviation for now, only adding to the new mean
-		double arrivalTime = randomArrival.nextGaussian()+k/2;
+		double arrivalTime = randomArrival.nextDouble(k+1.0);
 		return arrivalTime;
 
 	}
