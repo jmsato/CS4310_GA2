@@ -6,8 +6,7 @@ public class SimulationTable {
 	private int d; //average total CPU time
 	private int v; //standard deviation (should be a percentage of d) 
 	private Process[] processes;
-	private int N; // Number of processes
-	private Random random;
+	private static Random random;
 	
 	public SimulationTable(int k, int d, int v, int N) {
 		this.k = k;
@@ -29,8 +28,7 @@ public class SimulationTable {
 //	distribution with an average d and a standard deviation v, where d and v
 //	are simulation parameters.
 	public int getTotalCPUTime(){
-		Random randomCPU=new Random();
-		int totalCPUTime = (int)(randomCPU.nextGaussian()*v+d);
+		int totalCPUTime = (int) (random.nextGaussian()*v+d);
 		return totalCPUTime;
 	}
 

@@ -5,10 +5,14 @@ import java.util.List;
 public class Test {
 
 	public static void main(String[] args) {
-		int runTests = 1000;
+		int[] numberOfProcesses = {50, 200, 300, 400, 500, 600, 700, 800, 900, 1000};
+		int i = 0, runTests = 1000, k = 1000, d = 50, v = 12;
+		
+		System.out.println("Running Test.java file...");
 		
 		//Create CSV writer:
 		try {
+			System.out.println("Creating results.csv file...");
 			List<String[]> rows = new ArrayList<String[]>();
 			FileWriter csvWriter = new FileWriter("results.csv");
 			csvWriter.append("FIFO");
@@ -17,7 +21,30 @@ public class Test {
 			csvWriter.append(",");
 			csvWriter.append("SRT");
 			csvWriter.append("\n");
+
+			System.out.println("Running number of processes test suite...");
+			/*Number of Processes Test Suite*/
+			rows.add(new String[]{"Number of processes cases:"});
+
+			//Test Case 1: k = 1000, d = 50, v = 12, n = numberOfProcesses[i]
+			while(i < numberOfProcesses.length){
+
+				rows.add(new String[]{"k = 1000, d = 50, v = 12, n = " + numberOfProcesses[i]});
+				for(int times = 0; times < runTests; times++) {
+					String[] r = new String[3];
+					SimulationTable table = new SimulationTable(k, d, v, numberOfProcesses[i]);
+					r[0] = Integer.toString(table.runSimulationFIFO());
+					table.resetProcesses();
+					r[1] = Integer.toString(table.runSimulationSJF());
+					table.resetProcesses();
+					r[2] = Integer.toString(table.runSimulationSRT());
+					rows.add(r);
+				}
+				rows.add(new String[]{" "});
+				i++;
+			}
 			
+			System.out.println("Running arrival time interval test suite...");
 			/*Arrival Time Interval Test Suite*/
 			rows.add(new String[]{"Arrival time interval cases:"});
 			
@@ -78,6 +105,7 @@ public class Test {
 			}
 			rows.add(new String[]{" "});
 			
+			System.out.println("Running mean total CPU time test suite...");
 			/*Mean Total CPU Time Test Suite*/
 			rows.add(new String[]{"Mean total CPU time cases:"});
 			
@@ -136,16 +164,18 @@ public class Test {
 				rows.add(r);
 			}
 			
+			System.out.println("Writing to results.csv file...");
 			//Write to the CSV file
 			for (String[] rowData : rows) {
 			    csvWriter.append(String.join(",", rowData));
 			    csvWriter.append("\n");
 			}
-			
 			//Close CSV writer
 			csvWriter.flush();
 			csvWriter.close();
+			System.out.println("Done!");
 		} catch(Exception e) {
+			System.out.println("Something failed");
 			e.printStackTrace();
 		}
 	}
