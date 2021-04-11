@@ -5,7 +5,7 @@ import java.util.List;
 public class Test {
 
 	public static void main(String[] args) {
-		int[] numberOfProcesses = {50, 200, 300, 400, 500, 600, 700, 800, 900, 1000};
+		int[] numberOfProcesses = {50, 200, 300};
 		int i = 0, runTests = 1000, k = 1000, d = 50, v = 12;
 		
 		System.out.println("Running Test.java file...");
