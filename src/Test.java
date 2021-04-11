@@ -3,24 +3,6 @@ import java.io.FileWriter;
 
 public class Test {
 
-	// static SimulationTable table;
-	// static int testN (int numberOfProcesses, String scheduling_algorithm){
-	// 	int k = 1000;
-	// 	int d = 50;
-	// 	double v = 12.5;
-
-	// 	table = new SimulationTable(k, d, (int) v, numberOfProcesses);
-	// 	if(scheduling_algorithm.equalsIgnoreCase("FIFO")){
-	// 		return table.runSimulationFIFO();
-	// 	} 
-	// 	else if(scheduling_algorithm.equalsIgnoreCase("SJF")){
-	// 		return table.runSimulationSJF();
-	// 	} 
-	// 	else {
-	// 		return table.runSimulationSRT();
-	// 	}
-	// }
-
 	public static void main(String[] args) {
 		int[] numberOfProcesses = {50, 200, 300, 400, 500, 600, 700, 800, 900, 1000};
 		int i = 0, runTests = 1000, k = 1000, d = 50, v = 12;
@@ -67,28 +49,6 @@ public class Test {
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
-
-		
-		
-		// while(i < numberOfProcesses.length){
-		// 	for(int times = 0; times < runTests; times++) {
-		// 		System.out.println("Number of processes: " + numberOfProcesses[i]);
-		// 		testN(numberOfProcesses[i], "fifo");
-		// 		table.resetProcesses();
-
-		// 		testN(numberOfProcesses[i], "sjf");
-		// 		table.resetProcesses();
-
-		// 		testN(numberOfProcesses[i], "srt");
-		// 		table.resetProcesses();
-
-		// 		System.out.println(times);
-		// 	}
-		// 	i++;
-		// }
-
-		
-
 	}
 
 }
