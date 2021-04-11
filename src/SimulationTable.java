@@ -30,7 +30,7 @@ public class SimulationTable {
 //	are simulation parameters.
 	public int getTotalCPUTime(){
 		Random randomCPU=new Random();
-		int totalCPUTime = (int)randomCPU.nextGaussian()*v+d;
+		int totalCPUTime = (int)(randomCPU.nextGaussian()*v+d);
 		return totalCPUTime;
 	}
 
@@ -47,7 +47,13 @@ public class SimulationTable {
 	public void printProcesses() {
 		System.out.println("Testing order of arrival times: ");
 		for(Process process: processes) {
-			System.out.println(process.getArrivalTime());
+			System.out.println(process.getArrivalTime() + " " + process.getTotalCPUTime() + " " + process.getTurnaroundTime());
+		}
+	}
+	
+	public void resetProcesses() {
+		for(Process process: processes) {
+			process.setRemainingCPUTime(process.getTotalCPUTime());
 		}
 	}
 	
@@ -89,7 +95,7 @@ public class SimulationTable {
 					pi=null;//end the execution of pi and choose new process
 				}
 			}
-		}	
+		}
 		return averageTurnaroundTime/=this.processes.length;
 	}
 	
