@@ -20,9 +20,11 @@ public class Test {
 			
 			/*Arrival Time Interval Test Suite*/
 			rows.add(new String[]{"Arrival time interval cases:"});
+			
 			//Test Case 1: k = 1000, d = 50, v = 12, n = 100
 			rows.add(new String[]{"k = 1000, d = 50, v = 12, n = 100"});
 			for(int times = 0; times < runTests; times++) {
+				//Create a new row for each test run
 				String[] r = new String[3];
 				SimulationTable case1 = new SimulationTable(1000, 50, 12, 100);
 				r[0] = Integer.toString(case1.runSimulationFIFO());
@@ -67,6 +69,65 @@ public class Test {
 			for(int times = 0; times < runTests; times++) {
 				String[] r = new String[3];
 				SimulationTable case4 = new SimulationTable(2000, 50, 12, 100);
+				r[0] = Integer.toString(case4.runSimulationFIFO());
+				case4.resetProcesses();
+				r[1] = Integer.toString(case4.runSimulationSJF());
+				case4.resetProcesses();
+				r[2] = Integer.toString(case4.runSimulationSRT());
+				rows.add(r);
+			}
+			rows.add(new String[]{" "});
+			
+			/*Mean Total CPU Time Test Suite*/
+			rows.add(new String[]{"Mean total CPU time cases:"});
+			
+			//Test Case 1: k = 1000, d = 50, v = 12, n = 100
+			rows.add(new String[]{"k = 1000, d = 50, v = 12, n = 100"});
+			for(int times = 0; times < runTests; times++) {
+				String[] r = new String[3];
+				SimulationTable case1 = new SimulationTable(1000, 50, 12, 100);
+				r[0] = Integer.toString(case1.runSimulationFIFO());
+				case1.resetProcesses();
+				r[1] = Integer.toString(case1.runSimulationSJF());
+				case1.resetProcesses();
+				r[2] = Integer.toString(case1.runSimulationSRT());
+				rows.add(r);
+			}
+			rows.add(new String[]{" "});
+			
+			//Test Case 8: k = 1000, d = 25, v = 6, n = 100
+			rows.add(new String[]{"k = 1000, d = 25, v = 6, n = 100"});
+			for(int times = 0; times < runTests; times++) {
+				String[] r = new String[3];
+				SimulationTable case2 = new SimulationTable(1000, 25, 6, 100);
+				r[0] = Integer.toString(case2.runSimulationFIFO());
+				case2.resetProcesses();
+				r[1] = Integer.toString(case2.runSimulationSJF());
+				case2.resetProcesses();
+				r[2] = Integer.toString(case2.runSimulationSRT());
+				rows.add(r);
+			}
+			rows.add(new String[]{" "});
+			
+			//Test Case 9: k = 1000, d = 100, v = 25, n = 100
+			rows.add(new String[]{"k = 1000, d = 100, v = 25, n = 100"});
+			for(int times = 0; times < runTests; times++) {
+				String[] r = new String[3];
+				SimulationTable case3 = new SimulationTable(1000, 100, 25, 100);
+				r[0] = Integer.toString(case3.runSimulationFIFO());
+				case3.resetProcesses();
+				r[1] = Integer.toString(case3.runSimulationSJF());
+				case3.resetProcesses();
+				r[2] = Integer.toString(case3.runSimulationSRT());
+				rows.add(r);
+			}
+			rows.add(new String[]{" "});
+			
+			//Test Case 10: k = 1000, d = 75, v = 19, n = 100
+			rows.add(new String[]{"k = 1000, d = 75, v = 19, n = 100"});
+			for(int times = 0; times < runTests; times++) {
+				String[] r = new String[3];
+				SimulationTable case4 = new SimulationTable(1000, 75, 19, 100);
 				r[0] = Integer.toString(case4.runSimulationFIFO());
 				case4.resetProcesses();
 				r[1] = Integer.toString(case4.runSimulationSJF());
