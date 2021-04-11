@@ -30,7 +30,7 @@ public class SimulationTable {
 //	are simulation parameters.
 	public int getTotalCPUTime(){
 		Random randomCPU=new Random();
-		int totalCPUTime = (int)randomCPU.nextGaussian()*v+d;
+		int totalCPUTime = (int) (randomCPU.nextGaussian()*v+d);
 		return totalCPUTime;
 	}
 
