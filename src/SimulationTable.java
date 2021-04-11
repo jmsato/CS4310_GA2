@@ -43,7 +43,11 @@ public class SimulationTable {
 		Comparator<Process> byArrivalTime = (p1, p2) -> p1.getArrivalTime()-p2.getArrivalTime();
 		Arrays.sort(processes, byArrivalTime);
 	}
-	
+	public void resetProcesses() {
+        for(Process process: processes) {
+            process.setRemainingCPUTime(process.getTotalCPUTime());
+        }
+    }
 	public void printProcesses() {
 		System.out.println("Testing order of arrival times: ");
 		for(Process process: processes) {
