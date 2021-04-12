@@ -16,6 +16,16 @@ public class SimulationTable {
 		createProcesses(N);
 	}
 
+	public SimulationTable(int k, int d, int v, int N, int choice) {
+		this.k = k;
+		this.d = d;
+		this.v = v;
+		random = new Random();
+		if(choice==1)
+			createConvoy(N);
+		else if (choice==2)
+			createCustom(N);
+	}
 //	Each Ai is an integer chosen randomly from a uniform distribution
 //	between 0 and some value k, where k is a simulation parameter
 	public int getArrivalTime(){
@@ -42,6 +52,30 @@ public class SimulationTable {
 		Arrays.sort(processes, byArrivalTime);
 	}
 	
+	public void createConvoy(int N){
+		processes=new Process[N];
+		for (int i=0; i<N;i++){
+			processes[i]=new Process(false, getArrivalTime(),getTotalCPUTime());
+			if(processes[i].getArrivalTime()>=(9*k/10)){//get the last 10%
+				processes[i].setTotalCPUTime((int)Math.pow(processes[i].getTotalCPUTime(),2));
+			}
+		}
+		Comparator<Process> byArrivalTime = (p1, p2) -> p1.getArrivalTime()-p2.getArrivalTime();
+		Arrays.sort(processes, byArrivalTime);
+	}
+
+	public void createCustom(int N){
+		processes=new Process[N];
+
+		int custom=this.d;
+		for (int i=0; i<N;i++){
+			processes[i]=new Process(false, i,custom);
+				custom+=(2*custom/10);//decrement CPU time by 10% as we increment ArrivalTime of processes
+		}
+		Comparator<Process> byArrivalTime = (p1, p2) -> p1.getArrivalTime()-p2.getArrivalTime();
+		Arrays.sort(processes, byArrivalTime);
+	}
+
 	public void printProcesses() {
 		System.out.println("Testing order of arrival times: ");
 		for(Process process: processes) {
@@ -54,7 +88,10 @@ public class SimulationTable {
 			process.setRemainingCPUTime(process.getTotalCPUTime());
 		}
 	}
-	
+
+	public Process[] getProcesses(){
+		return this.processes;
+	}	
 	/**
 	 * This method will run a simulation using the FIFO algorithm to schedule processes.
 	 * @param args Unused.

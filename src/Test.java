@@ -14,7 +14,7 @@ public class Test {
 		try {
 			System.out.println("Creating results.csv file...");
 			List<String[]> rows = new ArrayList<String[]>();
-			FileWriter csvWriter = new FileWriter("results.csv");
+			FileWriter csvWriter = new FileWriter("customResults.csv");
 			csvWriter.append("FIFO");
 			csvWriter.append(",");
 			csvWriter.append("SJF");
@@ -163,6 +163,53 @@ public class Test {
 				r[2] = Integer.toString(case4.runSimulationSRT());
 				rows.add(r);
 			}
+
+
+			
+			// rows.add(new String[]{" "});
+			// System.out.println("Running custom CPU time test suite...");
+			// /*Custom CPU Time Test Suite*/
+			// rows.add(new String[]{"Custom Hypothesis Test Suite:"});
+			// /*for(int times = 0; times < 1; times++) {
+			// 	String[] r = new String[3];
+			// 	SimulationTable case5 = new SimulationTable(200, 75, 19, 20, 2);
+			// 	r[0] = Integer.toString(case5.runSimulationFIFO());
+			// 	case5.resetProcesses();
+			// 	r[1] = Integer.toString(case5.runSimulationSJF());
+			// 	case5.resetProcesses();
+			// 	r[2] = Integer.toString(case5.runSimulationSRT());
+			// 	rows.add(r);
+			// }*/
+			// String[] r = new String[3];
+			// SimulationTable case5 = new SimulationTable(30, 50, 10, 50, 2); //k, d, v, n
+			// 	r[0] = Integer.toString(case5.runSimulationFIFO());
+			// 	String[] p=new String[50];
+			// 	Process[] temp=case5.getProcesses();
+			// 	for(int index=0;index<50;index++){
+			// 		p[index]=Integer.toString(index)+": "+temp[index].toString();
+			// 	}
+			// 	rows.add(p);
+
+			// 	case5.resetProcesses();
+			// 	r[1] = Integer.toString(case5.runSimulationSJF());
+			// 	case5.resetProcesses();
+			// 	temp=case5.getProcesses();
+			// 	for(int index=0;index<50;index++){
+			// 		p[index]=Integer.toString(index)+": "+temp[index].toString();
+			// 	}
+			// 	rows.add(p);
+			// 	r[2] = Integer.toString(case5.runSimulationSRT());
+				
+
+			// 	temp=case5.getProcesses();
+			// 	for(int index=0;index<50;index++){
+			// 		p[index]=Integer.toString(index)+": "+temp[index].toString();
+			// 	}
+			// 	rows.add(p);
+			// 	rows.add(r);
+				
+
+
 			
 			System.out.println("Writing to results.csv file...");
 			//Write to the CSV file
